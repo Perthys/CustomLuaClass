@@ -59,10 +59,7 @@ local class = Syntax(function(Name, Data)
             local Found = Data[Index];
 
             if type(Found) == "table" and Found.Get then
-                local FENV = getfenv(Found.Get);
-                FENV.self = self;
-
-                return Found.Get();
+                return Found.Get(self);
             end
 
             return Value
@@ -72,10 +69,7 @@ local class = Syntax(function(Name, Data)
             local Found = Data[Index];
 
             if type(Found) == "table" and Found.Set then
-                local FENV = getfenv(Found.Set);
-                FENV.self = self;
-
-                return Found.Set(Value);
+                return Found.Set(self, Value);
             end
 
             self[Index] = Value
@@ -101,10 +95,7 @@ local class = Syntax(function(Name, Data)
         Constructor = Constructor.Handler;
 
         if not Constructor then error "No Constructor Found" end
-        local FENV = getfenv(Constructor);
-
-        FENV.self = self;
-        Constructor(...);
+        Constructor(self, ...);
 
         return UserData;
     end
